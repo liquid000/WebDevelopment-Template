@@ -9,7 +9,11 @@
 
 2. in clone root directory
 
-3. init eslint setting
+3. install packages
+
+        npm install
+
+4. init eslint setting
 
         eslint --init
 
