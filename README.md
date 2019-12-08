@@ -16,6 +16,14 @@
 4. init eslint setting
 
         eslint --init
+        
+5. setting autoprefixer in package-json(under the devDependencies object) and input versions to apply
+
+   -example
+
+        "browserslist": [
+          "last 2 versions", "ie >= 11", "Android >= 4"
+         ]
 
 
 ## Usage
