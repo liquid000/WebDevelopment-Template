@@ -5,7 +5,6 @@ const notify = require('gulp-notify'); // -エラー発生時にデスクトッ�
 const sassGlob = require('gulp-sass-glob'); // -@importの記述を簡潔にする
 const browserSync = require('browser-sync'); // -ブラウザ反映
 const postcss = require('gulp-postcss'); // -autoprefixerとセット
-const autoprefixer = require('autoprefixer'); // -ベンダープレフィックス付与
 const cssdeclsort = require('css-declaration-sorter'); // -css並べ替え
 const imagemin = require('gulp-imagemin');
 const pngquant = require('imagemin-pngquant');
@@ -24,12 +23,6 @@ gulp.task('sass', function () {
     .pipe(sass({
       outputStyle: 'expanded', // -expanded, nested, campact, compressedから選択
     }))
-    .pipe(postcss([autoprefixer({
-      // -☆IEは11以上、Androidは4.4以上
-      // -その他は最新2バージョンで必要なベンダープレフィックスを付与する
-      'browserslist': ['last 2 versions', 'ie >= 11', 'Android >= 4'],
-      'cascade': false,
-    })]))
     .pipe(postcss([cssdeclsort({
       order: 'alphabetically',
     })])) // -プロパティをソートし直す(アルファベット順)
