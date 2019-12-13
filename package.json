@@ -13,6 +13,7 @@
     "@typescript-eslint/parser": "^2.9.0",
     "autoprefixer": "^9.7.2",
     "browser-sync": "^2.26.7",
+    "browserify": "^16.5.0",
     "css-declaration-sorter": "^4.0.1",
     "eslint": "^6.7.1",
     "gulp": "^4.0.2",
@@ -24,8 +25,12 @@
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-sass-glob": "^1.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2",
     "imagemin-mozjpeg": "^8.0.0",
     "imagemin-pngquant": "^8.0.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   }
 }

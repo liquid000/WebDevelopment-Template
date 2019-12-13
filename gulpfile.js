@@ -9,8 +9,37 @@ const cssdeclsort = require('css-declaration-sorter'); // -css並べ替え
 const imagemin = require('gulp-imagemin');
 const pngquant = require('imagemin-pngquant');
 const mozjpeg = require('imagemin-mozjpeg');
-// const ejs = require('gulp-ejs');
 const rename = require('gulp-rename'); // -.ejsの拡張子を変更
+const browserify = require('browserify'); // -requireを解決
+const source = require('vinyl-source-stream');
+const uglify = require('gulp-uglify'); // -jsをmin化
+const sourcemaps = require('gulp-sourcemaps');
+const buffer = require('vinyl-buffer');
+
+// srcのindex.htmlを配布用のdistへ複製
+gulp.task('duplicate-html', function () {
+  return gulp.src(['src/*.html'])
+    .pipe(gulp.dest('dist'));
+})
+
+// requireの解決、配布jsの作成
+gulp.task('js-compile', function () {
+  return browserify({
+      basedir: '.',
+      debug: true,
+      entries: ['src/js/main.js'],
+      cache: {},
+      packageCache: {}
+    }).bundle()
+    .pipe(source('bundle.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({
+      loadMaps: true
+    }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('dist/scripts'));
+})
 
 // scssのコンパイル
 gulp.task('sass', function () {
@@ -34,7 +63,7 @@ gulp.task('browser-sync', function (done) {
   browserSync.init({
     // -ローカル開発
     server: {
-      baseDir: './',
+      baseDir: './dist/',
       index: 'index.html',
     },
   });
@@ -59,18 +88,26 @@ gulp.task('ejs', (done) => {
   done();
 });
 
+// -配布用コンパイルタスク
+gulp.task('release', gulp.series(gulp.parallel('duplicate-html', 'js-compile')))
+
 // 監視
 gulp.task('watch', function () {
   gulp.watch('./src/scss/**/*.scss', gulp.task('sass')); // -sassが更新されたらgulp sassを実行
   gulp.watch('./src/scss/**/*.scss', gulp.task('bs-reload')); // -sassが更新されたらbs-reloadを実行
+  gulp.watch('./src/js/*.js', gulp.task('release')); // -jsが更新されたらjsをrelease処理
   gulp.watch('./src/js/*.js', gulp.task('bs-reload')); // -jsが更新されたらbs-relaodを実行
+
   gulp.watch('./ejs/**/*.ejs', gulp.task('ejs')); // -ejsが更新されたらgulp-ejsを実行
   gulp.watch('./ejs/**/*.ejs', gulp.task('bs-reload')); // -ejsが更新されたらbs-reloadを実行
-  gulp.watch('./index.html', gulp.task('bs-reload')); //-index.htmlが更新されたらbs-reloadを実行
+
+  gulp.watch('./src/index.html', gulp.task('release')); //-index.htmlが更新されたらjsをrelease処理
+  gulp.watch('./src/index.html', gulp.task('bs-reload')); //-index.htmlが更新されたらbs-reloadを実行
 });
 
+
 // -defaultのタスク定義(実行コマンド=>gulp)
-gulp.task('default', gulp.series(gulp.parallel('browser-sync', 'watch')));
+gulp.task('default', gulp.series(gulp.parallel('release', 'browser-sync', 'watch')));
 
 // -圧縮率の定義
 const imageminOption = [
