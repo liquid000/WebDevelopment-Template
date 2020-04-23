@@ -44,7 +44,7 @@ gulp.task('js-compile', function () {
 // scssのコンパイル
 gulp.task('sass', function () {
   return gulp
-    .src('./src/scss/**/*.scss')
+    .src('./src/scss/*.scss')
     .pipe(plumber({
       errorHandler: notify.onError('Error: <%= error.message %>'),
     })) // -エラーチェック
@@ -93,8 +93,8 @@ gulp.task('release', gulp.series(gulp.parallel('duplicate-html', 'js-compile')))
 
 // 監視
 gulp.task('watch', function () {
-  gulp.watch('./src/scss/**/*.scss', gulp.task('sass')); // -sassが更新されたらgulp sassを実行
-  gulp.watch('./src/scss/**/*.scss', gulp.task('bs-reload')); // -sassが更新されたらbs-reloadを実行
+  gulp.watch('./src/scss/*.scss', gulp.task('sass')); // -sassが更新されたらgulp sassを実行
+  gulp.watch('./src/scss/*.scss', gulp.task('bs-reload')); // -sassが更新されたらbs-reloadを実行
   gulp.watch('./src/js/*.js', gulp.task('release')); // -jsが更新されたらjsをrelease処理
   gulp.watch('./src/js/*.js', gulp.task('bs-reload')); // -jsが更新されたらbs-relaodを実行
 
